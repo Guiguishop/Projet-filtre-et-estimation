@@ -29,7 +29,7 @@ end
 %     signal_padding(i) = signal(i);
 % end
 
-% fft : 
+%% fft : 
 signal_f=abs(fftshift(fft(signal,Nfft)));
 abscissef=-1/2:1/Nfft:(1/2-1/Nfft);
 figure;
@@ -37,14 +37,14 @@ plot(abscissef,signal_f);
 xlabel("Frequence (Hz)");
 ylabel("Fft");
 
-% DSP : 
+%% Périodogramme simple: 
 Dsp= signal_f.*signal_f/Nombre_point;
 figure;
 plot(abscissef,Dsp);
-ylabel("DSP");
+title("Périodogramme simple avec fenêtre rectangulaire");
 xlabel("Frequence reduite");
 
-% Puissance : 
+%% Puissance : 
 signal_f=abs(fftshift(fft(signal,Nfft)).^2);
 abscissef=-1/2:1/Nfft:(1/2-1/Nfft);
 figure;
@@ -52,8 +52,16 @@ plot(abscissef,signal_f);
 xlabel("Frequence (Hz)");
 ylabel("Puissance");
 
-%% pÃ©riodogramme :
+%% Périodogramme de Welch
+y= Mon_Welch(signal,Nfft,fech);
 
+%% Spectrogrammes
+windows=ones(1,length(signal)/4);
+[temps,frequence,spectro]=Mon_spectro(signal,Nfft,fech,windows,50);
+
+figure()
+imagesc(temps,frequence,transpose(spectro))
+xlabel("temps (s)"),ylabel("Fréquence (Hz)"),title("Spectrogramme")
 
 
 
