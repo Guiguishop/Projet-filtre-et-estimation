@@ -16,8 +16,10 @@ function[temps,frequence,spectro]=Mon_spectro(signal,Nfft,Fe,windows,recouvremen
         spectro(ligne,:)=abs(TF).^2;
     end
     
-    temps = 0 : recouvrement*Te: Te*length(signal);
-    frequence = linspace(-1/2,1/2,Nfft);
+    %temps = 0 : recouvrement*Te: Te*length(signal);
+    %frequence = linspace(-1/2,1/2,Nfft);
+    frequence=transpose([0:1/Nfft:1 +(1/Nfft)]*Fe);
+    temps= Nfft*Te/2: Te: (length(signal)-1)*Te;
 end
 
     

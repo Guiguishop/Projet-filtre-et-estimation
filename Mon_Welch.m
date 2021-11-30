@@ -22,9 +22,9 @@ y=y/Fe;
 abscisse = linspace(-1/2,1/2,NFFT);
 figure()
 plot(abscisse,abs(y));
-xlabel("Fr√©quence (Hz)")
+xlabel("FrÈquence (Hz)")
 ylabel("Amplitude")
-title("DSP estim√©e avec m√©thode pwelch")
+title("PÈriodogramme de Welch")
 
 end
  

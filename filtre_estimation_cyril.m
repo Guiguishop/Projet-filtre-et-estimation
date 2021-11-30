@@ -5,7 +5,7 @@ close all
 %% Projet filtre et estimations : 
 
 Nombre_point=100;
-var_bruit=0;
+var_bruit=3;
 fech=10000;
 fo=1000;
 Te=1/fech;
@@ -15,7 +15,7 @@ signal=cos(2*pi*(fo/fech)*abscisse)+bruit;
 figure;
 plot(abscisse,signal);
 xlabel("echantillon");
-ylabel("signal sinusoidale");
+title("signal sinusoidale");
 
 
 %Fft : 
@@ -37,13 +37,13 @@ abscissef=-1/2:1/Nfft:(1/2-1/Nfft);
 figure;
 plot(abscissef,signal_f);
 xlabel("Frequence (Hz)");
-ylabel("Fft");
+title("Fft");
 
 % DSP : 
-Dsp= signal_f.*signal_f/Nombre_point;
+Dsp= (signal_f.^2)/Nombre_point;
 figure;
 plot(abscissef,Dsp);
-ylabel("DSP");
+title("Periodogramme simple");
 xlabel("Frequence reduite");
 
 % Puissance : 
@@ -52,12 +52,13 @@ abscissef=-1/2:1/Nfft:(1/2-1/Nfft);
 figure;
 plot(abscissef,signal_f);
 xlabel("Frequence (Hz)");
-ylabel("Puissance");
+title("Module fft au carr�");
 
 %% périodogramme :
-% calcul de 10 periodogramme pour faire un periodogramme moyenne (daniel)
-signals=zeros(Nombre_point,10);
-for k=1:10
+% calcul de 100 periodogramme pour faire un periodogramme moyenne (daniel)
+N_experience = 100;
+signals=zeros(Nombre_point,N_experience);
+for k=1:N_experience
     bruit = randn(Nombre_point,1)*var_bruit;
     signals(:,k)=cos(2*pi*(fo/fech).*abscisse(1,:)')+bruit;
 end
@@ -72,7 +73,7 @@ title("exemple signals 1")
 
 figure;
 plot(abscissef,periodogrammedaniel);
-ylabel("periodogramme Daniel");
+title("periodogramme Daniel");
 
 % deux approches : periodogramme lissé et périodogramme moyenné 
 
@@ -91,14 +92,14 @@ semilogy(abscissef,periodogrammewelch2);
 title("periodogramme Welch new version");
 
 %% spectrogramme : 
-
-windows = ones(1,10);
-spectro = Spectrogramme(Nfft, signal,fech,windows);
-Ts=1/fech;
-temps=0:0.5*Ts:Ts*length(signal);
-frequence=linspace(-fech/2,fech/2,Nfft);
-figure;
-imagesc(temps,frequence,spectro);
+% 
+% windows = ones(1,10);
+% spectro = Spectrogramme(Nfft, signal,fech,windows);
+% Ts=1/fech;
+% temps=0:0.5*Ts:Ts*length(signal);
+% frequence=linspace(-fech/2,fech/2,Nfft);
+% figure;
+% imagesc(temps,frequence,spectro);
 
 
 
