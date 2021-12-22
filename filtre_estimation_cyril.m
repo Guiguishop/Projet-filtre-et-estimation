@@ -4,14 +4,28 @@ close all
 
 %% Projet filtre et estimations : 
 
-Nombre_point=100;
+Nombre_point=1000;
 var_bruit=3;
 fech=10000;
 fo=1000;
 Te=1/fech;
 abscisse=0:1:Nombre_point-1;
 bruit = randn(1,Nombre_point)*var_bruit;
+
 signal=cos(2*pi*(fo/fech)*abscisse)+bruit;
+signal_capon=cos(2*pi*(fo/fech)*abscisse)+bruit;
+
+% definition processus auto-regressif 
+c=rand(1);
+signal_auto_regressif=zeros(1,Nombre_point);
+for k=2:Nombre_point
+    signal_auto_regressif(k)=signal_auto_regressif(k-1)+bruit(k);
+end
+
+% figure;
+% plot(abscisse, signal_auto_regressif)
+% title("processus autoregressif");
+
 figure;
 plot(abscisse,signal);
 xlabel("echantillon");
@@ -62,20 +76,18 @@ for k=1:N_experience
     bruit = randn(Nombre_point,1)*var_bruit;
     signals(:,k)=cos(2*pi*(fo/fech).*abscisse(1,:)')+bruit;
 end
+% periodogramme moyennÈ :
+[periodogrammemoyenne,tabperio]=periodogramme_moyenne(signals);
 
-
-figure;
-plot(abscisse,signals(:,1));
-title("exemple signals 1")
-[periodogrammedaniel,tabperio]=periodogramme_moyenne(signals);
+tailleswindowsbis=10;
+windowsbis=ones(1,tailleswindowsbis);
+[periodogrammedaniel]=Periodogramme_daniel(signal,windowsbis);
 
 % affichage : 
 
 figure;
 plot(abscissef,periodogrammedaniel);
 title("periodogramme Daniel");
-
-% deux approches : periodogramme liss√© et p√©riodogramme moyenn√© 
 
 periodogrammewelch= Mon_Welch(signal,Nfft,fech);
 figure;
@@ -84,7 +96,8 @@ title("periodogramme Welch");
 
 % Mon new_welch :
 recouvrement=1;
-windows=ones(1,10);
+taillewindows=100;
+windows=ones(1,taillewindows);
 [periodogrammewelch2, tabperio2]= Monnew_Welch(signal,Nfft,fech,windows,recouvrement);
 
 figure;
@@ -100,6 +113,9 @@ title("periodogramme Welch new version");
 % frequence=linspace(-fech/2,fech/2,Nfft);
 % figure;
 % imagesc(temps,frequence,spectro);
+
+%% mÈthode capon 
+
 
 
 
