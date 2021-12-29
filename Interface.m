@@ -22,7 +22,7 @@ function varargout = Interface(varargin)
 
 % Edit the above text to modify the response to help Interface
 
-% Last Modified by GUIDE v2.5 22-Dec-2021 13:35:42
+% Last Modified by GUIDE v2.5 29-Dec-2021 14:05:16
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -66,13 +66,20 @@ handles.Cosinus=signal;
 bruit = randn(1,Nombre_point)*var_bruit;
 handles.BBGC=bruit;
 
-% dataset  : 
+% dataset 3 : 
+% processus auto regressif d'ordre p : 
+p=10;
+processusar=zeros(1,length(bruit));
+for k=1:p
+    for i=1:k-1
+        processusar(k)=processusar(k)+processusar(i);
+    end
+end
 
-% dataset 2 : 
 
-% dataset 2 : 
+% dataset 4 : 
 
-% dataset 2 : 
+
 
 handles.currentData=handles.BBGC;
 %plot(handles.currentData);
@@ -157,14 +164,18 @@ function periodogramme_welch_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 disp("on est dans periodogramme_welch");
+strcheck = get(handles.checkbox1,'String');
+valcheck=get(handles.checkbox1,'Value');
 recouvrement=1;
 taillewindows=100;
 Nfft = length(handles.currentData);
 % permet d'ajouter le padding nÃ©cessaire pour avoir une puissance de 2 
-while ((log2(Nfft)-floor(log2(Nfft))) ~= 0)
-    Nfft=Nfft+1;
-    handles.currentData=[handles.currentData 0];
-    
+if (valcheck ==1)
+    while ((log2(Nfft)-floor(log2(Nfft))) ~= 0)
+         Nfft=Nfft+1;
+         handles.currentData=[handles.currentData 0];
+    end
+    disp(Nfft);
 end
 fech=10000;
 
@@ -188,7 +199,9 @@ if (handles.Bertlatt ==1)
 end
 
 [periodogramme_welch, tabperio2]= Monnew_Welch(handles.currentData,Nfft,fech,windows,recouvrement);
-plot(periodogramme_welch);
+abscisse=linspace(-fech/2,fech/2,Nfft);
+
+plot(abscisse,periodogramme_welch);
 
 
 
@@ -198,6 +211,8 @@ function spectrogramme_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see G
 taillewindows=floor(length(handles.currentData)/4);
+strcheck = get(handles.checkbox1,'String');
+valcheck=get(handles.checkbox1,'Value');
 
 if (handles.Rectangulaire ==1)
     windows=ones(1,taillewindows);
@@ -216,6 +231,14 @@ if (handles.Bertlatt ==1)
     disp("fenetre bertlatt");
 end
 Nfft=1000;
+if (valcheck ==1)
+    while ((log2(Nfft)-floor(log2(Nfft))) ~= 0)
+         Nfft=Nfft+1;
+         handles.currentData=[handles.currentData 0];
+    end
+    disp(Nfft);
+end
+
 fech=10000;
 % while ((log2(Nfft)-floor(log2(Nfft))) ~= 0)
 %     Nfft=Nfft+1;
@@ -249,6 +272,12 @@ function signaux_Callback(hObject, eventdata, handles)
      case 'Cosinus'
          disp("on est dans le cos");
          handles.currentData=handles.Cosinus;
+     case 'PAR'
+         disp("on est dans le PAR");
+         handles.currentData=handles.PAR;
+     case 'PMA'
+         disp("on est dans le PMA");
+         handles.currentData=handles.PMA;
 
  end
 
@@ -325,8 +354,11 @@ function periodoramme_daniel_Callback(hObject, eventdata, handles)
 % hObject    handle to periodoramme_daniel (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+Nfft=length(handles.currentData);
+fech=10000;
 taillewindows=10;
+strcheck = get(handles.checkbox1,'String');
+valcheck=get(handles.checkbox1,'Value');
 if (handles.Rectangulaire ==1)
     windows=ones(1,taillewindows);
     disp("fenetre rectangle")
@@ -343,8 +375,17 @@ if (handles.Bertlatt ==1)
     windows = transpose(bartlett(taillewindows));
     disp("fenetre bertlatt");
 end
+
+if (valcheck ==1)
+    while ((log2(Nfft)-floor(log2(Nfft))) ~= 0)
+         Nfft=Nfft+1;
+         handles.currentData=[handles.currentData 0];
+    end
+    disp(Nfft);
+end
 [periodogrammedaniel]=Periodogramme_daniel(handles.currentData,windows);
-plot(periodogrammedaniel);
+abscisse=linspace(-fech/2,fech/2,Nfft);
+plot(abscisse,periodogrammedaniel);
 title("periodogramme de daniel");
 xlabel("Frequence (Hz)");
 
@@ -356,11 +397,24 @@ function periodogramme_moyenne_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 str = get(handles.signaux,'String');
  val=get(handles.signaux,'Value');
+ strcheck = get(handles.checkbox1,'String');
+valcheck=get(handles.checkbox1,'Value');
+disp(valcheck)
 
 fech=10000;
 fo=1000;
 Te=1/fech;
 Nombre_point=1000;
+if (valcheck ==1)
+    while ((log2(Nombre_point)-floor(log2(Nombre_point))) ~= 0)
+         Nombre_point=Nombre_point+1;
+    end
+    disp(Nombre_point);
+end
+
+
+
+
 abscisse=0:1:Nombre_point-1;
 % 
 var_bruit=1;
@@ -390,8 +444,15 @@ disp(str(val));
 
 % periodogramme moyenné :
 [periodogrammemoyenne,tabperio]=periodogramme_moyenne(signals);
-plot(periodogrammemoyenne);
+Nombre_point=length(periodogrammemoyenne);
+abscisse=linspace(-fech/2,fech/2,Nombre_point);
+plot(abscisse,periodogrammemoyenne);
+if (valcheck ~=1)
 title("periodogramme moyenné sur 10 réalisations");
+end
+if (valcheck ==1)
+title("periodogramme moyenné sur 10 réalisations et zero padding");
+end
 
 
 % --- Executes during object creation, after setting all properties.
@@ -401,3 +462,13 @@ function axes1_CreateFcn(hObject, eventdata, handles)
 % handles    empty - handles not created until after all CreateFcns called
 
 % Hint: place code in OpeningFcn to populate axes1
+
+
+% --- Executes on button press in checkbox1.
+function checkbox1_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox1

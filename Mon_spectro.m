@@ -1,5 +1,5 @@
 function[temps,frequence,spectro]=Mon_spectro(signal,Nfft,Fe,windows,recouvrement)
-    spectro =zeros(length(signal)/length(windows)*2,Nfft); %Spectro est une matrice contenant sur chaque ligne la fft du signal fenetre
+    spectro =zeros(floor(length(signal)/length(windows)*2),Nfft); %Spectro est une matrice contenant sur chaque ligne la fft du signal fenetre
     Te=1/Fe;
     a=1;
     b=length(windows);
