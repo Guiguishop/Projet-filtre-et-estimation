@@ -22,7 +22,7 @@ function varargout = Interface(varargin)
 
 % Edit the above text to modify the response to help Interface
 
-% Last Modified by GUIDE v2.5 29-Dec-2021 14:05:16
+% Last Modified by GUIDE v2.5 29-Dec-2021 15:24:14
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -54,7 +54,7 @@ function Interface_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % dataset 1 : 
 Nombre_point=1000;
-var_bruit=3;
+var_bruit=1;
 fech=10000;
 fo=1000;
 Te=1/fech;
@@ -67,16 +67,26 @@ bruit = randn(1,Nombre_point)*var_bruit;
 handles.BBGC=bruit;
 
 % dataset 3 : 
-% processus auto regressif d'ordre p : 
-p=10;
+% processus auto regressif d'ordre 2 : 
+a=0.7;
+b=0.3;
 processusar=zeros(1,length(bruit));
-for k=1:p
-    for i=1:k-1
-        processusar(k)=processusar(k)+processusar(i);
-    end
+processusma=zeros(1,length(bruit));
+processusar(1)=randn(1,1)*var_bruit;
+% simulation d'un processus auto regressif d'ordre 2 :
+processusar(2)=randn(1,1)*var_bruit+a*processusar(1);
+for k=3:length(bruit)
+    processusar(k)=a*processusar(k-1)+b*processusar(k-2)+randn(1,1);
+end
+% simulation d'un processus à moyenne ajustée d'ordre 2 : 
+processusma(1)=bruit(1);
+processusma(2)=bruit(2)+a*processusma(1);
+for i=3:length(bruit)
+    processusma(i)=a*bruit(i-1)+bruit(i);
 end
 
-
+handles.PAR=processusar;
+handles.PMA=processusma;
 % dataset 4 : 
 
 
@@ -438,7 +448,42 @@ disp(str(val));
            end
            disp("bruit blanc")
            disp("on est dans le cos");
-         
+     case 'PAR'
+           N_experience = 10;
+           
+           signals=zeros(Nombre_point,N_experience);
+           for i=1:N_experience
+               bruit = randn(Nombre_point,1)*var_bruit;
+               a=0.7;
+               b=0.3;
+               processusar=zeros(1,length(bruit));
+               
+               processusar(1)=randn(1,1)*var_bruit;
+                % simulation d'un processus auto regressif d'ordre 2 :
+               processusar(2)=randn(1,1)*var_bruit+a*processusar(1);
+               for k=3:length(bruit)
+                    processusar(k)=a*processusar(k-1)+b*processusar(k-2)+randn(1,1);
+               end
+               signals(:,i)=processusar;
+           end
+      case 'PMA'
+           N_experience = 10;
+           
+           signals=zeros(Nombre_point,N_experience);
+           for i=1:N_experience
+               bruit = randn(Nombre_point,1)*var_bruit;
+               a=0.7;
+               b=0.3;
+               processusma=zeros(1,length(bruit));
+               
+               processusma(1)=bruit(1);
+               processusma(2)=bruit(2)+a*processusma(1);
+               for i=3:length(bruit)
+                    processusma(i)=a*bruit(i-1)+bruit(i);
+                end
+               signals(:,i)=processusma;
+           end
+
 
  end
 
@@ -472,3 +517,17 @@ function checkbox1_Callback(hObject, eventdata, handles)
 
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox1
+
+
+% --- Executes on button press in tracesignal.
+function tracesignal_Callback(hObject, eventdata, handles)
+% hObject    handle to tracesignal (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+fe=10000;
+Te=1/fe;
+abscisse=linspace(0,10000*Te,length(handles.currentData));
+plot(abscisse,handles.currentData);
+title("Représentation du signal sélectionné");
+xlabel("Temps(s)");
