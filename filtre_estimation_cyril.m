@@ -38,6 +38,7 @@ Nfft = Nombre_point;
 while ((log2(Nfft)-floor(log2(Nfft))) ~= 0)
     Nfft=Nfft+1;
     signal=[signal 0];
+    signal_capon=[signal_capon 0];
     
 end
 % signal_padding = zeros(1,Nfft);
@@ -62,7 +63,7 @@ xlabel("Frequence reduite");
 
 % Puissance : 
 signal_f=abs(fftshift(fft(signal,Nfft)).^2);
-abscissef=-1/2:1/Nfft:(1/2-1/Nfft);
+abscissef=linspace(-fech/2,fech/2,Nfft);
 figure;
 plot(abscissef,signal_f);
 xlabel("Frequence (Hz)");
@@ -115,7 +116,7 @@ title("periodogramme Welch new version");
 % imagesc(temps,frequence,spectro);
 
 %% méthode capon 
-
+[P invRx]= capon(signal, abscissef, fech,0);
 
 
 

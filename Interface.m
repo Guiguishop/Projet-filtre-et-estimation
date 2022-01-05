@@ -53,7 +53,7 @@ function Interface_OpeningFcn(hObject, eventdata, handles, varargin)
 % varargin   command line arguments to Interface (see VARARGIN)
 
 % dataset 1 : 
-Nombre_point=1000;
+Nombre_point=1500;
 var_bruit=1;
 fech=10000;
 fo=1000;
@@ -240,7 +240,7 @@ if (handles.Bertlatt ==1)
     windows = transpose(bartlett(taillewindows));
     disp("fenetre bertlatt");
 end
-Nfft=1000;
+Nfft=length(handles.currentData);
 if (valcheck ==1)
     while ((log2(Nfft)-floor(log2(Nfft))) ~= 0)
          Nfft=Nfft+1;
@@ -414,7 +414,7 @@ disp(valcheck)
 fech=10000;
 fo=1000;
 Te=1/fech;
-Nombre_point=1000;
+Nombre_point=length(handles.currentData);
 if (valcheck ==1)
     while ((log2(Nombre_point)-floor(log2(Nombre_point))) ~= 0)
          Nombre_point=Nombre_point+1;
