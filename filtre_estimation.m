@@ -89,12 +89,15 @@ imagesc(temps,frequence,transpose(spectro))
 xlabel("temps (s)"),ylabel("Fréquence (Hz)"),title("Spectrogramme")
 
 %% Méthode des rectangles/trapezes
-fmin = 0;
-fmax = 2000;
-integrale1 = method_trapeze(periodogrammedaniel,fmax,fmin);
-integrale2 = method_trapeze(y,fmax,fmin);
+fmin = 100;
+fmax = 300;
+integrale1 = method_trapeze(Dsp,fmax,fmin,fech);
+integrale2 = method_trapeze(y,fmax,fmin,fech);
 disp(["Intégrale1 entre" fmin "et" fmax "vaut" integrale1])
 disp(["Intégrale2 entre" fmin "et" fmax "vaut" integrale2])
+
+RX= corrcoef([1 2 4 3]);
+
 
 
 
