@@ -116,7 +116,20 @@ title("periodogramme Welch new version");
 % imagesc(temps,frequence,spectro);
 
 %% méthode capon 
-[P invRx]= capon(signal, abscissef, fech,0);
+%[P invRx]= capon(signal, abscissef, fech,0);
+
+%% Méthode des trapezes
+fmin = 100;
+fmax = 300;
+integrale1 = method_trapeze(periodogrammewelch,fmin,fmax,fech);
+integrale2 = method_trapeze(periodogrammedaniel,fmin,fmax,fech);
+integrale3 = method_trapeze(periodogrammemoyenne,fmin,fmax,fech);
+integrale4 = method_trapeze(periodogrammewelch2,fmin,fmax,fech);
+disp(["IntégraleWelch entre" fmin "et" fmax "vaut" integrale1])
+disp(["IntégraleDaniel entre" fmin "et" fmax "vaut" integrale2])
+disp(["IntégraleMoyenne entre" fmin "et" fmax "vaut" integrale3])
+disp(["IntégraleWelch2 entre" fmin "et" fmax "vaut" integrale4])
+
 
 
 
