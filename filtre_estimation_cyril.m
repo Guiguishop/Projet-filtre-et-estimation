@@ -7,7 +7,7 @@ close all
 Nombre_point=1000;
 var_bruit=3;
 fech=10000;
-fo=1000;
+fo=4500;
 Te=1/fech;
 abscisse=0:1:Nombre_point-1;
 bruit = randn(1,Nombre_point)*var_bruit;
@@ -34,6 +34,7 @@ title("signal sinusoidale");
 
 %Fft : 
 Nfft = Nombre_point;
+signalnonpadde = signal;
 % permet d'ajouter le padding nÃ©cessaire pour avoir une puissance de 2 
 while ((log2(Nfft)-floor(log2(Nfft))) ~= 0)
     Nfft=Nfft+1;
@@ -116,7 +117,10 @@ title("periodogramme Welch new version");
 % imagesc(temps,frequence,spectro);
 
 %% méthode capon 
-[P invRx]= capon(signal, abscissef, fech,0);
+[P]= capon(signal, abscissef, fech);
+figure()
+plot(abscissef,abs(P)),title("Puissance")
+
 
 %% Méthode des trapezes
 fmin = 100;
@@ -124,7 +128,6 @@ fmax = 300;
 integrale2 = method_trapeze(periodogrammedaniel,fmin,fmax,fech);
 integrale3 = method_trapeze(periodogrammemoyenne,fmin,fmax,fech);
 integrale4 = method_trapeze(periodogrammewelch2,fmin,fmax,fech);
-disp(["IntégraleWelch entre" fmin "et" fmax "vaut" integrale1])
 disp(["IntégraleDaniel entre" fmin "et" fmax "vaut" integrale2])
 disp(["IntégraleMoyenne entre" fmin "et" fmax "vaut" integrale3])
 disp(["IntégraleWelch2 entre" fmin "et" fmax "vaut" integrale4])
