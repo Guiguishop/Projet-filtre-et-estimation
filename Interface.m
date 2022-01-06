@@ -22,7 +22,8 @@ function varargout = Interface(varargin)
 
 % Edit the above text to modify the response to help Interface
 
-% Last Modified by GUIDE v2.5 29-Dec-2021 15:24:14
+
+% Last Modified by GUIDE v2.5 05-Jan-2022 20:23:16
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -53,11 +54,20 @@ function Interface_OpeningFcn(hObject, eventdata, handles, varargin)
 % varargin   command line arguments to Interface (see VARARGIN)
 
 % dataset 1 : 
-Nombre_point=1500;
+% fech=10000;
+% fo=3000;
+global fech;
+global fo;
+fech=input("Définissez fech : ");
+fo=input("Définissez fo");
+disp("fo" + fo);
+disp("fech" + fech);
+
+
+Nombre_point=1000;
 var_bruit=1;
-fech=10000;
-fo=1000;
-Te=1/fech;
+
+%Te=1/fech;
 abscisse=0:1:Nombre_point-1;
 bruit = randn(1,Nombre_point)*var_bruit;
 signal=cos(2*pi*(fo/fech)*abscisse)+bruit;
@@ -176,8 +186,15 @@ function periodogramme_welch_Callback(hObject, eventdata, handles)
 disp("on est dans periodogramme_welch");
 strcheck = get(handles.checkbox1,'String');
 valcheck=get(handles.checkbox1,'Value');
+strfmin = get(handles.fmin,'String');
+strfmax = get(handles.fmax,'String');
+% strfech = get(handles.fech,'String');
+% fech=str2num(strfech);
+global fech;
+global fo;
 recouvrement=1;
-taillewindows=100;
+taillewindows=length(handles.currentData)/10;
+disp('taille windows :' + taillewindows)
 Nfft = length(handles.currentData);
 % permet d'ajouter le padding nÃ©cessaire pour avoir une puissance de 2 
 if (valcheck ==1)
@@ -187,7 +204,7 @@ if (valcheck ==1)
     end
     disp(Nfft);
 end
-fech=10000;
+
 
 %windows = transpose(hanning(length(signal)/4)); %fenêtre de hanning
 %windows = transpose(bartlett(length(signal)/4));
@@ -212,6 +229,7 @@ end
 abscisse=linspace(-fech/2,fech/2,Nfft);
 
 plot(abscisse,periodogramme_welch);
+xlim([str2num(strfmin) str2num(strfmax)]);
 
 
 
@@ -223,7 +241,12 @@ function spectrogramme_Callback(hObject, eventdata, handles)
 taillewindows=floor(length(handles.currentData)/4);
 strcheck = get(handles.checkbox1,'String');
 valcheck=get(handles.checkbox1,'Value');
-
+strfmin = get(handles.fmin,'String');
+strfmax = get(handles.fmax,'String');
+% strfech = get(handles.fech,'String');
+% fech=str2num(strfech);
+global fech;
+global fo;
 if (handles.Rectangulaire ==1)
     windows=ones(1,taillewindows);
     disp("fenetre rectangle")
@@ -249,7 +272,6 @@ if (valcheck ==1)
     disp(Nfft);
 end
 
-fech=10000;
 % while ((log2(Nfft)-floor(log2(Nfft))) ~= 0)
 %     Nfft=Nfft+1;
 %     handles.currentData=[handles.currentData 0];
@@ -264,6 +286,7 @@ fech=10000;
 
 imagesc(temps,frequence,transpose(spectro))
 xlabel("temps (s)"),ylabel("Fréquence (Hz)"),title("Spectrogramme")
+% xlim([handles.fmin handles])
 
 
 
@@ -318,7 +341,10 @@ function fmin_Callback(hObject, eventdata, handles)
 % hObject    handle to fmin (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+str = get(handles.fmin,'String');
+ val=get(handles.fmin,'Value');
+ disp("Valeur défini pour fmin : "+ str);
+disp("ok");
 % Hints: get(hObject,'String') returns contents of fmin as text
 %        str2double(get(hObject,'String')) returns contents of fmin as a double
 
@@ -341,7 +367,11 @@ function fmax_Callback(hObject, eventdata, handles)
 % hObject    handle to fmax (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+disp(handles.fmax);
+str = get(handles.fmax,'String');
+ val=get(handles.fmax,'Value');
+ disp("valeur définie pour fmax : " + str);
+disp("ok");
 % Hints: get(hObject,'String') returns contents of fmax as text
 %        str2double(get(hObject,'String')) returns contents of fmax as a double
 
@@ -365,10 +395,16 @@ function periodoramme_daniel_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 Nfft=length(handles.currentData);
-fech=10000;
+
 taillewindows=10;
 strcheck = get(handles.checkbox1,'String');
 valcheck=get(handles.checkbox1,'Value');
+strfmin = get(handles.fmin,'String');
+strfmax = get(handles.fmax,'String');
+% strfech = get(handles.fech,'String');
+% fech=str2num(strfech);
+global fech;
+global fo;
 if (handles.Rectangulaire ==1)
     windows=ones(1,taillewindows);
     disp("fenetre rectangle")
@@ -398,6 +434,7 @@ abscisse=linspace(-fech/2,fech/2,Nfft);
 plot(abscisse,periodogrammedaniel);
 title("periodogramme de daniel");
 xlabel("Frequence (Hz)");
+xlim([str2num(strfmin) str2num(strfmax)]);
 
 
 % --- Executes on button press in periodogramme_moyenne.
@@ -409,10 +446,13 @@ str = get(handles.signaux,'String');
  val=get(handles.signaux,'Value');
  strcheck = get(handles.checkbox1,'String');
 valcheck=get(handles.checkbox1,'Value');
+strfmin = get(handles.fmin,'String');
+strfmax = get(handles.fmax,'String');
 disp(valcheck)
-
-fech=10000;
-fo=1000;
+global fech;
+global fo;
+% fech=10000;
+% fo=1000;
 Te=1/fech;
 Nombre_point=length(handles.currentData);
 if (valcheck ==1)
@@ -492,6 +532,7 @@ disp(str(val));
 Nombre_point=length(periodogrammemoyenne);
 abscisse=linspace(-fech/2,fech/2,Nombre_point);
 plot(abscisse,periodogrammemoyenne);
+xlim([str2num(strfmin) str2num(strfmax)]);
 if (valcheck ~=1)
 title("periodogramme moyenné sur 10 réalisations");
 end
@@ -524,10 +565,66 @@ function tracesignal_Callback(hObject, eventdata, handles)
 % hObject    handle to tracesignal (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-fe=10000;
-Te=1/fe;
+% strfech = get(handles.fech,'String');
+% fe=str2num(strfech);
+global fech;
+global fo;
+Te=1/fech;
 abscisse=linspace(0,10000*Te,length(handles.currentData));
 plot(abscisse,handles.currentData);
 title("Représentation du signal sélectionné");
 xlabel("Temps(s)");
+
+
+
+function fech_Callback(hObject, eventdata, handles)
+% hObject    handle to fech (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of fech as text
+%        str2double(get(hObject,'String')) returns contents of fech as a double
+disp(handles.fech);
+str = get(handles.fech,'String');
+ val=get(handles.fech,'Value');
+ disp("valeur définie pour fech : " + str);
+disp("ok");
+
+% --- Executes during object creation, after setting all properties.
+function fech_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to fech (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function fo_Callback(hObject, eventdata, handles)
+% hObject    handle to fo (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of fo as text
+%        str2double(get(hObject,'String')) returns contents of fo as a double
+disp(handles.fo);
+str = get(handles.fo,'String');
+ val=get(handles.fo,'Value');
+ disp("valeur définie pour fo : " + str);
+disp("ok");
+
+% --- Executes during object creation, after setting all properties.
+function fo_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to fo (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

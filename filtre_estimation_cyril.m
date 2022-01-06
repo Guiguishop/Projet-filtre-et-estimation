@@ -121,7 +121,6 @@ title("periodogramme Welch new version");
 %% Méthode des trapezes
 fmin = 100;
 fmax = 300;
-integrale1 = method_trapeze(periodogrammewelch,fmin,fmax,fech);
 integrale2 = method_trapeze(periodogrammedaniel,fmin,fmax,fech);
 integrale3 = method_trapeze(periodogrammemoyenne,fmin,fmax,fech);
 integrale4 = method_trapeze(periodogrammewelch2,fmin,fmax,fech);
