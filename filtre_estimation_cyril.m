@@ -116,7 +116,7 @@ title("periodogramme Welch new version");
 % imagesc(temps,frequence,spectro);
 
 %% méthode capon 
-%[P invRx]= capon(signal, abscissef, fech,0);
+[P invRx]= capon(signal, abscissef, fech,0);
 
 %% Méthode des trapezes
 fmin = 100;
