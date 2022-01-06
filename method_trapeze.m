@@ -3,23 +3,22 @@ function integrale=method_trapeze(y,fmin,fmax,fech)
     deb = 0;
     fin = 0;
     if(fmin>= -fech/2 && fmax<=fech/2 && fmin<fmax)
-        disp("RENTRE DANS LE IF")
         N= length(y)-1;
         %Récupération de l'indice de début et de fin pour calculer
         %l'intégrale
         for i=0:N-1
             if(-fech/2+ i*fech/N <=fmin && fmin<=-fech/2 + (i+1)*fech/N)
                 deb= i+1;
-                disp(deb)
+                %disp(deb)
             end
             if(-fech/2+ i*fech/N <=fmax && fmax<=-fech/2 + (i+1)*fech/N)
                 fin = i+1;
-                disp(fin)
+                %disp(fin)
             end
         end
         pas = fech/N;
         for k= deb:2:fin
-            disp(k)
+            %disp(k)
             integrale = integrale + (y(k)+y(k+1))*pas/2;
         end  
     end
