@@ -82,7 +82,7 @@ end
 
 tailleswindowsbis=10;
 windowsbis=ones(1,tailleswindowsbis);
-[periodogrammedaniel]=Periodogramme_daniel(signal,windowsbis);
+[periodogrammedaniel]=Periodogramme_danielbis(signal,windowsbis);
 
 % affichage : 
 
@@ -116,18 +116,21 @@ title("periodogramme Welch new version");
 % imagesc(temps,frequence,spectro);
 
 %% méthode capon 
-%[P invRx]= capon(signal, abscissef, fech,0);
+[P]= capon(signal, abscissef, fech);
+P=mean(P');
+plot(abscissef,abs(P));
+
 
 %% Méthode des trapezes
-fmin = 100;
-fmax = 300;
-integrale2 = method_trapeze(periodogrammedaniel,fmin,fmax,fech);
-integrale3 = method_trapeze(periodogrammemoyenne,fmin,fmax,fech);
-integrale4 = method_trapeze(periodogrammewelch2,fmin,fmax,fech);
-disp(["IntégraleWelch entre" fmin "et" fmax "vaut" integrale1])
-disp(["IntégraleDaniel entre" fmin "et" fmax "vaut" integrale2])
-disp(["IntégraleMoyenne entre" fmin "et" fmax "vaut" integrale3])
-disp(["IntégraleWelch2 entre" fmin "et" fmax "vaut" integrale4])
+% fmin = 100;
+% fmax = 300;
+% integrale2 = method_trapeze(periodogrammedaniel,fmin,fmax,fech);
+% integrale3 = method_trapeze(periodogrammemoyenne,fmin,fmax,fech);
+% %integrale4 = method_trapeze(periodogrammewelch2,fmin,fmax,fech);
+% %disp(["IntégraleWelch entre" fmin "et" fmax "vaut" integrale1])
+% disp(["IntégraleDaniel entre" fmin "et" fmax "vaut" integrale2])
+% %disp(["IntégraleMoyenne entre" fmin "et" fmax "vaut" integrale3])
+% disp(["IntégraleWelch2 entre" fmin "et" fmax "vaut" integrale4])
 
 
 

@@ -1,4 +1,4 @@
-function [P,returned] = capon(signal, f, fech,mode)
+function [P] = capon(signal, f, fech,mode)
 N=length(signal);
 if (length(signal)~= length(f))
     disp("probleme de dimension");
@@ -10,16 +10,13 @@ for j=1:length(f )
     end
 end
 Rx=signal'*signal;
-P=zeros(N,length(f ));
+
 invRx=1\Rx;
-if (mode ==1)
- returned=invRx
-end
-if (mode==0)
-for k=1:length(f)
 
-P(:,k)=1/(a*invRx*a');
-end
+
+
+P=1./(conj(a)'*invRx*a);
+
 end
 
-end 
+

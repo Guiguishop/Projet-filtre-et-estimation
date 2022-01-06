@@ -1,5 +1,6 @@
 function [periodogramme_daniel] = Periodogramme_daniel(x,windows) 
-% on calcule le periodogramme associé à x 
+% on calcule le periodogramme associé à x avec la formule classique (fft
+% au carré / taille)
 signal_sortie = periodogramme_simple(x);
 taillew=length(windows);
 k=taillew;
@@ -20,7 +21,7 @@ while (k<length(signal_sortie)) %tant que l'indice k est inférieur à la taille
     k=k+1;
 
 end
-% à revoir car c'est pas très opti 
+
 for k=length(signal_sortie)+1:length(signal_sortie)+length(windows)-1
     tmp=signal_sortie(k-length(windows)+1:k-length(windows));
     moyennetmp=mean(tmp);
