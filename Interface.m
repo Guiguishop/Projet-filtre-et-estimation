@@ -23,7 +23,7 @@ function varargout = Interface(varargin)
 % Edit the above text to modify the response to help Interface
 
 
-% Last Modified by GUIDE v2.5 05-Jan-2022 20:23:16
+% Last Modified by GUIDE v2.5 06-Jan-2022 16:59:19
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -59,9 +59,8 @@ function Interface_OpeningFcn(hObject, eventdata, handles, varargin)
 global fech;
 global fo;
 fech=input("Définissez fech : ");
-fo=input("Définissez fo");
-disp("fo" + fo);
-disp("fech" + fech);
+fo=input("Définissez fo : ");
+
 
 
 Nombre_point=1000;
@@ -183,7 +182,7 @@ function periodogramme_welch_Callback(hObject, eventdata, handles)
 % hObject    handle to periodogramme_welch (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-disp("on est dans periodogramme_welch");
+disp("Periodogramme Welch")
 strcheck = get(handles.checkbox1,'String');
 valcheck=get(handles.checkbox1,'Value');
 strfmin = get(handles.fmin,'String');
@@ -230,6 +229,7 @@ abscisse=linspace(-fech/2,fech/2,Nfft);
 
 plot(abscisse,periodogramme_welch);
 xlim([str2num(strfmin) str2num(strfmax)]);
+title("Periodogramme de Welch");
 
 
 
@@ -344,7 +344,6 @@ function fmin_Callback(hObject, eventdata, handles)
 str = get(handles.fmin,'String');
  val=get(handles.fmin,'Value');
  disp("Valeur défini pour fmin : "+ str);
-disp("ok");
 % Hints: get(hObject,'String') returns contents of fmin as text
 %        str2double(get(hObject,'String')) returns contents of fmin as a double
 
@@ -371,7 +370,7 @@ disp(handles.fmax);
 str = get(handles.fmax,'String');
  val=get(handles.fmax,'Value');
  disp("valeur définie pour fmax : " + str);
-disp("ok");
+
 % Hints: get(hObject,'String') returns contents of fmax as text
 %        str2double(get(hObject,'String')) returns contents of fmax as a double
 
@@ -401,6 +400,8 @@ strcheck = get(handles.checkbox1,'String');
 valcheck=get(handles.checkbox1,'Value');
 strfmin = get(handles.fmin,'String');
 strfmax = get(handles.fmax,'String');
+strpuissance = get(handles.Puissance,'Value');
+
 % strfech = get(handles.fech,'String');
 % fech=str2num(strfech);
 global fech;
@@ -432,9 +433,15 @@ end
 [periodogrammedaniel]=Periodogramme_daniel(handles.currentData,windows);
 abscisse=linspace(-fech/2,fech/2,Nfft);
 plot(abscisse,periodogrammedaniel);
-title("periodogramme de daniel");
+title("Periodogramme de daniel");
 xlabel("Frequence (Hz)");
 xlim([str2num(strfmin) str2num(strfmax)]);
+
+if(strpuissance==1)
+power = method_trapeze(periodogrammedaniel,str2num(strfmin),str2num(strfmax),fech);
+disp("La puissance est de " + power + " W ");
+end
+
 
 
 % --- Executes on button press in periodogramme_moyenne.
@@ -534,10 +541,10 @@ abscisse=linspace(-fech/2,fech/2,Nombre_point);
 plot(abscisse,periodogrammemoyenne);
 xlim([str2num(strfmin) str2num(strfmax)]);
 if (valcheck ~=1)
-title("periodogramme moyenné sur 10 réalisations");
+title("Periodogramme moyenné sur 10 réalisations");
 end
 if (valcheck ==1)
-title("periodogramme moyenné sur 10 réalisations et zero padding");
+title("Periodogramme moyenné sur 10 réalisations avec zero padding");
 end
 
 
@@ -560,9 +567,9 @@ function checkbox1_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of checkbox1
 
 
-% --- Executes on button press in tracesignal.
-function tracesignal_Callback(hObject, eventdata, handles)
-% hObject    handle to tracesignal (see GCBO)
+% --- Executes on button press in Signal.
+function Signal_Callback(hObject, eventdata, handles)
+% hObject    handle to Signal (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 % strfech = get(handles.fech,'String');
@@ -587,8 +594,8 @@ function fech_Callback(hObject, eventdata, handles)
 disp(handles.fech);
 str = get(handles.fech,'String');
  val=get(handles.fech,'Value');
- disp("valeur définie pour fech : " + str);
-disp("ok");
+ disp("Valeur définie pour fech : " + str);
+
 
 % --- Executes during object creation, after setting all properties.
 function fech_CreateFcn(hObject, eventdata, handles)
@@ -614,8 +621,8 @@ function fo_Callback(hObject, eventdata, handles)
 disp(handles.fo);
 str = get(handles.fo,'String');
  val=get(handles.fo,'Value');
- disp("valeur définie pour fo : " + str);
-disp("ok");
+ disp("Valeur définie pour fo : " + str);
+
 
 % --- Executes during object creation, after setting all properties.
 function fo_CreateFcn(hObject, eventdata, handles)
@@ -628,3 +635,34 @@ function fo_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in Signal.
+function Capon_Callback(hObject, eventdata, handles)
+% hObject    handle to Signal (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global fech;
+strfmin = get(handles.fmin,'String');
+strfmax = get(handles.fmax,'String');
+valcheck=get(handles.checkbox1,'Value');
+Nombre_point=length(handles.currentData);
+if (valcheck ==1)
+    while ((log2(Nombre_point)-floor(log2(Nombre_point))) ~= 0)
+         Nombre_point=Nombre_point+1;
+    end
+    disp(Nombre_point);
+end
+abscisse=linspace(-fech/2,fech/2,Nombre_point);
+[P]= capon(handles.currentData, abscisse, fech);
+plot(abscisse,abs(P)),title("Méthode de Capon");
+
+xlim([str2num(strfmin) str2num(strfmax)]);
+xlabel("Frequence(Hz)");
+
+% --- Executes on button press in pushbutton10.
+function Puissance_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton10 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.Puissance=1;

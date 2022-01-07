@@ -35,7 +35,7 @@ title("signal sinusoidale");
 %Fft : 
 Nfft = Nombre_point;
 signalnonpadde = signal;
-% permet d'ajouter le padding nÃ©cessaire pour avoir une puissance de 2 
+% permet d'ajouter le padding nécessaire pour avoir une puissance de 2 
 while ((log2(Nfft)-floor(log2(Nfft))) ~= 0)
     Nfft=Nfft+1;
     signal=[signal 0];
@@ -70,7 +70,7 @@ plot(abscissef,signal_f);
 xlabel("Frequence (Hz)");
 title("Module fft au carré");
 
-%% pÃ©riodogramme :
+%% périodogramme :
 % calcul de 100 periodogramme pour faire un periodogramme moyenne (daniel)
 N_experience = 100;
 signals=zeros(Nombre_point,N_experience);
@@ -83,7 +83,7 @@ end
 
 tailleswindowsbis=10;
 windowsbis=ones(1,tailleswindowsbis);
-[periodogrammedaniel]=Periodogramme_danielbis(signal,windowsbis);
+[periodogrammedaniel]=Periodogramme_daniel(signal,windowsbis);
 
 % affichage : 
 
@@ -117,25 +117,6 @@ title("periodogramme Welch new version");
 % imagesc(temps,frequence,spectro);
 
 %% méthode capon 
-<<<<<<< HEAD
-
-[P]= capon(signal, abscissef, fech);
-P=mean(P');
-plot(abscissef,abs(P));
-
-
-
-%% Méthode des trapezes
-% fmin = 100;
-% fmax = 300;
-% integrale2 = method_trapeze(periodogrammedaniel,fmin,fmax,fech);
-% integrale3 = method_trapeze(periodogrammemoyenne,fmin,fmax,fech);
-% %integrale4 = method_trapeze(periodogrammewelch2,fmin,fmax,fech);
-% %disp(["IntégraleWelch entre" fmin "et" fmax "vaut" integrale1])
-% disp(["IntégraleDaniel entre" fmin "et" fmax "vaut" integrale2])
-% %disp(["IntégraleMoyenne entre" fmin "et" fmax "vaut" integrale3])
-% disp(["IntégraleWelch2 entre" fmin "et" fmax "vaut" integrale4])
-=======
 [P]= capon(signal, abscissef, fech);
 figure()
 plot(abscissef,abs(P)),title("Puissance")
@@ -150,7 +131,6 @@ integrale4 = method_trapeze(periodogrammewelch2,fmin,fmax,fech);
 disp(["IntégraleDaniel entre" fmin "et" fmax "vaut" integrale2])
 disp(["IntégraleMoyenne entre" fmin "et" fmax "vaut" integrale3])
 disp(["IntégraleWelch2 entre" fmin "et" fmax "vaut" integrale4])
->>>>>>> cfb6731ceda9fac7974196ae6886b9f8c365e670
 
 
 
